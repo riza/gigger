@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	testFilePath = "../../test/testdata/.git/index"
+	testFilePath = "../../test/testdata/gitfolder/index"
 )
 
 var g *Git
