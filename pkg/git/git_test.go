@@ -2,19 +2,17 @@ package git
 
 import (
 	"testing"
-
-	"github.com/riza/gigger/pkg/gigger"
 )
 
 const (
-	testFilePath = "../../test/testdata/gitfolder/index"
+	testFilePath = "../../test_www/gitfolder/index"
 )
 
 var g *Git
 
 func TestNew(t *testing.T) {
 	var err error
-	g, err = New(&gigger.Config{}, testFilePath)
+	g, err = New(testFilePath)
 	if err != nil {
 		t.Error(err)
 	}
