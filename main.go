@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"time"
 
 	"github.com/riza/gigger/pkg/config"
+	"github.com/riza/gigger/pkg/gigger"
+	"github.com/riza/gigger/pkg/task"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -42,6 +43,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(conf)
+	t, err := task.NewTask(conf)
+	if err != nil {
+		log.Error().Msgf("[Task]: %s\n", err)
+		os.Exit(1)
+	}
 
+	p, err := gigger.NewPool(conf, t)
+	if err != nil {
+		log.Error().Msgf("[Pool]: %s\n", err)
+		os.Exit(1)
+	}
+
+	p.Run()
 }

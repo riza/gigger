@@ -21,11 +21,13 @@ type Config struct {
 
 func NewConfig() Config {
 	var conf Config
+
 	conf.ProxyURL = ""
 	conf.Timeout = 60 * time.Second
 	conf.SkipSSLVerify = true
 	conf.Thread = 30
 	conf.URL = ""
+
 	conf.Verbose = false
 	conf.Debug = false
 	return conf
