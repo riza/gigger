@@ -1,0 +1,13 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = git@github.com:riza/gigger_test.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[user]
+	email = me@rizasabuncu.com
+	name = Riza Sabuncu
