@@ -1,6 +1,8 @@
 package git
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 )
 
@@ -11,14 +13,25 @@ const (
 var g *Git
 
 func TestNewGit(t *testing.T) {
-	var err error
-	g, err = NewGit(testFilePath)
-	if err != nil {
-		t.Error(err)
-	}
+	g = NewGit()
 }
 
 func TestParseIndex(t *testing.T) {
+	file, err := os.Open(testFilePath)
+	if err != nil {
+		t.Error(err)
+	}
+
+	b, err := ioutil.ReadAll(file)
+	if err != nil {
+		t.Error(err)
+	}
+
+	g.Index, err = g.ParseIndex(b)
+	if err != nil {
+		t.Error(err)
+	}
+
 	if g.Index.Header.Signature != "DIRC" {
 		t.Error("sinagure is invalid")
 	}
