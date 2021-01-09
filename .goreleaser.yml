@@ -15,10 +15,7 @@ builds:
       - 
         goos: freebsd
         goarch: arm64
-      - 
-        goos: linux
-        goarch: 386
-
+        
 archives:
   - id: tgz
     format: tar.gz

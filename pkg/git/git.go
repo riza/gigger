@@ -3,12 +3,12 @@ package git
 import (
 	"bufio"
 	"bytes"
+	"compress/zlib"
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
+	"io/ioutil"
 	"unsafe"
-
-	"github.com/4kills/go-zlib"
 )
 
 const (
@@ -154,18 +154,21 @@ func (g *Git) ParseIndex(data []byte) (index, error) {
 }
 
 func (g *Git) ParseObject(data []byte) (string, error) {
-	r, err := zlib.NewReader(nil)
-	if err != nil {
-		return "", err
-	}
-	defer r.Close()
+	b := bytes.NewReader(data)
 
-	_, dc, err := r.ReadBuffer(data, nil)
+	z, err := zlib.NewReader(b)
 	if err != nil {
 		return "", err
 	}
 
-	return g.b2s(g.blobRemover(dc)), nil
+	defer z.Close()
+
+	p, err := ioutil.ReadAll(z)
+	if err != nil {
+		return "", err
+	}
+
+	return g.b2s(g.blobRemover(p)), nil
 }
 
 func (g *Git) readBytes(size int) []byte {
@@ -195,6 +198,11 @@ func (g *Git) blobRemover(data []byte) []byte {
 			break
 		}
 	}
+
+	if limit <= 0 {
+		return data
+	}
+
 	return data[limit+1:]
 }
 
