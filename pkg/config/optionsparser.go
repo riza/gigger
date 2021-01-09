@@ -13,7 +13,6 @@ import (
 type ConfigOptions struct {
 	General GeneralOptions
 	HTTP    HTTPOptions
-	Output  OutputOptions
 }
 type GeneralOptions struct {
 	Verbose bool
@@ -28,11 +27,6 @@ type HTTPOptions struct {
 	URL           string
 }
 
-type OutputOptions struct {
-	OutputDirectory string
-	OutputFile      string
-}
-
 func NewConfigOptions() *ConfigOptions {
 	c := &ConfigOptions{}
 	c.General.Verbose = false
@@ -42,8 +36,6 @@ func NewConfigOptions() *ConfigOptions {
 	c.HTTP.Timeout = 10
 	c.HTTP.URL = ""
 	c.HTTP.SkipSSLVerify = true
-	c.Output.OutputDirectory = ""
-	c.Output.OutputFile = ""
 	return c
 }
 
@@ -70,11 +62,8 @@ func ConfigFromOptions(parseOpts *ConfigOptions) (*Config, error) {
 	}
 
 	conf.Thread = parseOpts.General.Thread
-	conf.OutputFile = parseOpts.Output.OutputFile
-	conf.OutputDirectory = parseOpts.Output.OutputDirectory
 	conf.Timeout = parseOpts.HTTP.Timeout
 	conf.Verbose = parseOpts.General.Verbose
-	conf.Debug = parseOpts.General.Debug
 
 	return &conf, nil
 }

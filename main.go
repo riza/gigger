@@ -18,12 +18,7 @@ func ParseFlags(opts *config.ConfigOptions) *config.ConfigOptions {
 	flag.StringVar(&opts.HTTP.ProxyURL, "x", opts.HTTP.ProxyURL, "HTTP Proxy URL")
 	flag.DurationVar(&opts.HTTP.Timeout, "timeout", opts.HTTP.Timeout, "HTTP request timeout in seconds.")
 	flag.BoolVar(&opts.HTTP.SkipSSLVerify, "ssl", opts.HTTP.SkipSSLVerify, "todo")
-
-	flag.StringVar(&opts.Output.OutputDirectory, "od", opts.Output.OutputDirectory, "Directory path to store matched results to.")
-	flag.StringVar(&opts.Output.OutputFile, "o", opts.Output.OutputFile, "Write output to file")
-
 	flag.BoolVar(&opts.General.Verbose, "v", opts.General.Verbose, "Verbose output, printing full URL and redirect location (if any) with the results.")
-	flag.BoolVar(&opts.General.Debug, "d", opts.General.Debug, "You can catch errors more easily in debug mode.")
 	flag.Parse()
 	return opts
 }
