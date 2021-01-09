@@ -53,7 +53,12 @@ func (p *Pool) process(data interface{}) {
 		p.Wg.Done()
 	}
 
-	status, body, _ := p.task.Client.Get(nil, url.URL)
+	status, body, err := p.task.Client.Get(nil, url.URL)
+	if err != nil {
+		log.Error().Msgf("[%d] %s", url.URL, err)
+		p.Wg.Done()
+		return
+	}
 	if status != 200 {
 		log.Error().Msgf("[%d] %s", status, url.URL)
 		p.Wg.Done()
