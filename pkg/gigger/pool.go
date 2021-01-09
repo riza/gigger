@@ -1,6 +1,7 @@
 package gigger
 
 import (
+	"encoding/json"
 	"sync"
 
 	"github.com/panjf2000/ants/v2"
@@ -79,6 +80,22 @@ func (p *Pool) process(data interface{}) {
 		if p.conf.Verbose {
 			log.Info().Msgf("%s parsed", url.URL)
 		}
+
+		jsonIndex, err := json.Marshal(index)
+		if err != nil {
+			log.Error().Msgf("index json marshall error [%s]", err.Error())
+			p.Wg.Done()
+			return
+		}
+
+		err = p.task.SaveFile("index.json", string(jsonIndex))
+		if err != nil {
+			log.Error().Msgf("%s save file error [%s]", url.fileName, err.Error())
+			p.Wg.Done()
+			return
+		}
+
+		log.Info().Msgf("%s downloaded", "index.json")
 
 		for _, entry := range index.Entries {
 			objectURL := URL{
