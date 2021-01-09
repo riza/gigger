@@ -10,13 +10,13 @@ import (
 
 type Task struct {
 	config *config.Config
-	client *fasthttp.Client
+	Client *fasthttp.Client
 }
 
 func NewTask(conf *config.Config) (*Task, error) {
 	t := &Task{}
 	t.config = conf
-	t.client = &fasthttp.Client{
+	t.Client = &fasthttp.Client{
 		Dial:                fasthttp.Dial,
 		MaxIdleConnDuration: conf.Timeout,
 		TLSConfig: &tls.Config{
@@ -25,7 +25,7 @@ func NewTask(conf *config.Config) (*Task, error) {
 	}
 
 	if len(t.config.ProxyURL) >= 1 {
-		t.client.Dial = fasthttpproxy.FasthttpHTTPDialerTimeout(conf.ProxyURL, conf.Timeout)
+		t.Client.Dial = fasthttpproxy.FasthttpHTTPDialerTimeout(conf.ProxyURL, conf.Timeout)
 	}
 
 	return t, nil

@@ -56,4 +56,5 @@ func main() {
 	}
 
 	p.Run()
+	p.Wg.Wait()
 }
