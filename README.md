@@ -17,3 +17,19 @@
   
 ## Usage
 
+For now, you can find out which parameter does what by reading the main.go file, I will edit here for usage details soon.
+
+### TODO
+
+- [ ] Output Provider (html,json,csv)
+- [ ] Usage docs
+- [ ] Comments for godoc
+- [ ] Codecov with Github Actions
+
+## p.s.
+
+We also need a new icon, anyone who can make me a pickaxe icon can reach me on [Twitter](https://twitter.com/rizasabuncu). :)
+
+## License
+
+gigger is released under MIT license. See [LICENSE](https://github.com/riza/gigger/blob/master/LICENSE).
