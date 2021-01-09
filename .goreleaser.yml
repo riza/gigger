@@ -15,7 +15,7 @@ builds:
       - 
         goos: freebsd
         goarch: arm64
-        
+
 archives:
   - id: tgz
     format: tar.gz
@@ -24,6 +24,3 @@ archives:
     format_overrides:
         - goos: windows
           format: zip
-
-signs:
-  - artifacts: checksum
