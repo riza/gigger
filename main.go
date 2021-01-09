@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -24,6 +25,7 @@ func ParseFlags(opts *config.ConfigOptions) *config.ConfigOptions {
 }
 
 func main() {
+	header()
 	var err error
 
 	var opts *config.ConfigOptions
@@ -52,4 +54,12 @@ func main() {
 
 	p.Run()
 	p.Wg.Wait()
+}
+
+func header() {
+	logo := `
+	█▀▀ █ █▀▀ █▀▀ █▀▀ █▀█
+	█▄█ █ █▄█ █▄█ ██▄ █▀▄
+	`
+	fmt.Println(logo)
 }

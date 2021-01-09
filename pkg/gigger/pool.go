@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/panjf2000/ants/v2"
+	"github.com/rs/zerolog/log"
 
 	"github.com/riza/gigger/pkg/config"
 	"github.com/riza/gigger/pkg/git"
@@ -51,9 +52,29 @@ func (p *Pool) process(data interface{}) {
 	if !check {
 		p.Wg.Done()
 	}
-	_, body, _ := p.task.Client.Get(nil, url.URL)
+
+	status, body, _ := p.task.Client.Get(nil, url.URL)
+	if status != 200 {
+		log.Error().Msgf("[%d] %s", status, url.URL)
+		p.Wg.Done()
+		return
+	} else {
+		if p.conf.Verbose {
+			log.Info().Msgf("[%d] %s", status, url.URL)
+		}
+	}
+
 	if url.isIndex {
-		index, _ := p.git.ParseIndex(body)
+		index, err := p.git.ParseIndex(body)
+		if err != nil {
+			log.Error().Msgf("%s parsing error [%s]", url.URL, err.Error())
+			p.Wg.Done()
+			return
+		}
+		if p.conf.Verbose {
+			log.Info().Msgf("%s parsed", url.URL)
+		}
+
 		for _, entry := range index.Entries {
 			objectURL := URL{
 				p.conf.URL + ".git/objects/" + string(entry.SHA1[0]) + string(entry.SHA1[1]) + "/" + entry.SHA1[2:],
@@ -61,6 +82,11 @@ func (p *Pool) process(data interface{}) {
 				true,
 				entry.Name,
 			}
+
+			if p.conf.Verbose {
+				log.Info().Msgf("%s object found, downloading [%s]", objectURL.URL, objectURL.fileName)
+			}
+
 			p.pool.Invoke(objectURL)
 			p.Wg.Add(1)
 		}
@@ -68,9 +94,18 @@ func (p *Pool) process(data interface{}) {
 	if url.isObject {
 		object, err := p.git.ParseObject(body)
 		if err != nil {
-			//err
+			log.Error().Msgf("%s parsing error [%s]", url.URL, err.Error())
+			p.Wg.Done()
+			return
 		}
-		p.task.SaveFile(url.fileName, object)
+
+		err = p.task.SaveFile(url.fileName, object)
+		if err != nil {
+			log.Error().Msgf("%s save file error [%s]", url.fileName, err.Error())
+			p.Wg.Done()
+			return
+		}
+		log.Info().Msgf("%s downloaded", url.fileName)
 	}
 
 	p.Wg.Done()

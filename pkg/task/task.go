@@ -78,7 +78,7 @@ func (t *Task) NewTaskFolder() error {
 
 func (t *Task) SaveFile(name string, data string) error {
 	filesPath := resultsPath + t.host + "/files/" + name
-	f, err := os.Create(filesPath + name)
+	f, err := os.Create(filesPath)
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,6 @@ func (t *Task) SaveFile(name string, data string) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
