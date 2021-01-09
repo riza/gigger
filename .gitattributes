@@ -1,2 +1,1 @@
-/test_www linguist-vendored
-*.go linguist-vendored=false
+/test_www/* linguist-vendored
