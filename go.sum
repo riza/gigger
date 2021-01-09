@@ -1,3 +1,5 @@
+github.com/4kills/go-zlib v1.1.0 h1:16INsJZ1+9ClgPbWh3eOBd8lKAK1FRemTwYgtmwcCQQ=
+github.com/4kills/go-zlib v1.1.0/go.mod h1:ngBUonyN1YJBHSknfLPNtWokAjYhHsaZDio8yS+BqSo=
 github.com/andybalholm/brotli v1.0.0/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
 github.com/andybalholm/brotli v1.0.1 h1:KqhlKozYbRtJvsPrrEeXcO+N2l6NYT5A2QAFmSULpEc=
 github.com/andybalholm/brotli v1.0.1/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=

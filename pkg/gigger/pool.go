@@ -22,6 +22,7 @@ type URL struct {
 	URL      string
 	isIndex  bool
 	isObject bool
+	fileName string
 }
 
 func NewPool(conf *config.Config, t *task.Task) (*Pool, error) {
@@ -34,9 +35,9 @@ func NewPool(conf *config.Config, t *task.Task) (*Pool, error) {
 		return nil, err
 	}
 
+	p.git = git.NewGit()
 	p.conf = conf
 	p.task = t
-	p.git = git.NewGit()
 
 	if string(p.conf.URL[len(p.conf.URL)-1]) != "/" {
 		p.conf.URL += "/"
@@ -58,12 +59,18 @@ func (p *Pool) process(data interface{}) {
 				p.conf.URL + ".git/objects/" + string(entry.SHA1[0]) + string(entry.SHA1[1]) + "/" + entry.SHA1[2:],
 				false,
 				true,
+				entry.Name,
 			}
 			p.pool.Invoke(objectURL)
+			p.Wg.Add(1)
 		}
 	}
 	if url.isObject {
-		//decompress zLib
+		object, err := p.git.ParseObject(body)
+		if err != nil {
+			//err
+		}
+		p.task.SaveFile(url.fileName, object)
 	}
 
 	p.Wg.Done()
@@ -72,7 +79,7 @@ func (p *Pool) process(data interface{}) {
 
 func (p *Pool) Run() error {
 	for _, u := range p.generateList() {
-		url := URL{u, u == p.conf.URL+".git/index", false}
+		url := URL{u, u == p.conf.URL+".git/index", false, ""}
 		err := p.pool.Invoke(url)
 		if err != nil {
 			return err

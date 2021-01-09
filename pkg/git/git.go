@@ -6,8 +6,9 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
+	"unsafe"
 
-	"github.com/riza/gigger/pkg/config"
+	"github.com/4kills/go-zlib"
 )
 
 const (
@@ -20,7 +21,6 @@ type Git struct {
 	pos int //reader cursor
 
 	reader *bufio.Reader
-	config *config.Config
 }
 
 type index struct {
@@ -70,12 +70,12 @@ func NewGit() *Git {
 }
 
 func (g *Git) ParseIndex(data []byte) (index, error) {
-	dataReader := bytes.NewReader(data)
+	dataReader := bytes.NewReader(data) // weirdo..
 	g.reader = bufio.NewReaderSize(dataReader, int(dataReader.Size()))
 
 	index := index{}
 	index.Header = header{
-		string(g.readBytes(4)),
+		g.b2s(g.readBytes(4)),
 		binary.BigEndian.Uint32(g.readBytes(4)),
 		binary.BigEndian.Uint32(g.readBytes(4)),
 	}
@@ -107,18 +107,18 @@ func (g *Git) ParseIndex(data []byte) (index, error) {
 		}
 
 		if nameLen < 0xFFF {
-			item.Name = string(g.readBytes(int(nameLen)))
+			item.Name = g.b2s(g.readBytes(int(nameLen)))
 			entryLen += int(nameLen)
 		} else {
 			name := []byte{}
 			for {
 				b := g.readBytes(1)
-				if string(b) == "\x00" {
+				if g.b2s(b) == "\x00" {
 					break
 				}
 				name = append(name, b[0])
 			}
-			item.Name = string(name)
+			item.Name = g.b2s(name)
 			entryLen++
 		}
 
@@ -141,9 +141,9 @@ func (g *Git) ParseIndex(data []byte) (index, error) {
 
 	for g.pos < (indexLen - 20) {
 		index.Extension.Extension = extNum
-		index.Extension.Signature = string(g.readBytes(4))
+		index.Extension.Signature = g.b2s(g.readBytes(4))
 		index.Extension.Size = binary.BigEndian.Uint32(g.readBytes(4))
-		index.Extension.Data = string(g.readBytes(int(index.Extension.Size)))
+		index.Extension.Data = g.b2s(g.readBytes(int(index.Extension.Size)))
 		extNum++
 	}
 
@@ -151,6 +151,21 @@ func (g *Git) ParseIndex(data []byte) (index, error) {
 	index.Checksum.SHA1 = hex.EncodeToString(g.readBytes(20))
 
 	return index, nil
+}
+
+func (g *Git) ParseObject(data []byte) (string, error) {
+	r, err := zlib.NewReader(nil)
+	if err != nil {
+		return "", err
+	}
+	defer r.Close()
+
+	_, dc, err := r.ReadBuffer(data, nil)
+	if err != nil {
+		return "", err
+	}
+
+	return g.b2s(g.blobRemover(dc)), nil
 }
 
 func (g *Git) readBytes(size int) []byte {
@@ -170,4 +185,19 @@ func (g *Git) checkNullBytes(bytes []byte) bool {
 		}
 	}
 	return true
+}
+
+func (g *Git) blobRemover(data []byte) []byte {
+	var limit int
+	for i, b := range data {
+		if b == 0 {
+			limit = i
+			break
+		}
+	}
+	return data[limit+1:]
+}
+
+func (g *Git) b2s(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
 }
