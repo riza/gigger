@@ -10,9 +10,9 @@ const (
 
 var g *Git
 
-func TestNew(t *testing.T) {
+func TestNewGit(t *testing.T) {
 	var err error
-	g, err = New(testFilePath)
+	g, err = NewGit(testFilePath)
 	if err != nil {
 		t.Error(err)
 	}

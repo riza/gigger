@@ -2,10 +2,10 @@ package git
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"os"
 
 	"github.com/riza/gigger/pkg/config"
 )
@@ -65,29 +65,13 @@ type checksum struct {
 	SHA1     string
 }
 
-func New(path string) (*Git, error) {
-	g := &Git{}
-
-	data, err := os.Open(path)
-	if err != nil {
-		return g, err
-	}
-
-	dataStat, err := data.Stat()
-	if err != nil {
-		return g, err
-	}
-
-	g.reader = bufio.NewReaderSize(data, int(dataStat.Size()))
-	g.Index, err = g.parseIndex()
-	if err != nil {
-		return g, err
-	}
-
-	return g, err
+func NewGit() *Git {
+	return &Git{}
 }
 
-func (g *Git) parseIndex() (index, error) {
+func (g *Git) ParseIndex(data []byte) (index, error) {
+	dataReader := bytes.NewReader(data)
+	g.reader = bufio.NewReaderSize(dataReader, int(dataReader.Size()))
 
 	index := index{}
 	index.Header = header{
