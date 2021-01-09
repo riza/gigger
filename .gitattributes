@@ -1,2 +1,2 @@
 * linguist-vendored
-*.sample linguist-vendored=false
+/test_www linguist-vendored=false
