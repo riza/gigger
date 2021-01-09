@@ -12,8 +12,12 @@ builds:
       - arm
       - arm64
     ignore:
-      - goos: freebsd
+      - 
+        goos: freebsd
         goarch: arm64
+      - 
+        goos: linux
+        goarch: 386
 
 archives:
   - id: tgz
