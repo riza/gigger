@@ -19,16 +19,16 @@
 
 For now, you can find out which parameter does what by reading the main.go file, I will edit here for usage details soon.
 
-### TODO
+## p.s.
+
+We also need a new icon, anyone who can make me a pickaxe icon can reach me on [Twitter](https://twitter.com/rizasabuncu). :)
+
+## TODO
 
 - [ ] Output Provider (html,json,csv)
 - [ ] Usage docs
 - [ ] Comments for godoc
 - [ ] Codecov with Github Actions
-
-## p.s.
-
-We also need a new icon, anyone who can make me a pickaxe icon can reach me on [Twitter](https://twitter.com/rizasabuncu). :)
 
 ## License
 
