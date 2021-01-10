@@ -106,28 +106,50 @@ func (p *Pool) process(data interface{}) {
 			}
 
 			if p.conf.Verbose {
-				log.Info().Msgf("%s object found, downloading [%s]", objectURL.URL, objectURL.fileName)
+				log.Info().Msgf("[%s] Object found ", objectURL.fileName)
 			}
 
 			p.pool.Invoke(objectURL)
 			p.Wg.Add(1)
+
+			entityRealURL := p.conf.URL + entry.Name
+			entityRealFileName := "entry_" + entry.Name
+
+			entityStatus, entityBody, err := p.task.Client.Get(nil, entityRealURL)
+			if err != nil {
+				log.Error().Msgf("[%d] entity cannot downloading %s", entityStatus, entityRealURL)
+			}
+			if entityStatus != 200 {
+				log.Error().Msgf("[%d] %s", entityStatus, entityRealURL)
+			} else {
+				if p.conf.Verbose {
+					log.Info().Msgf("[%d] entity downloading %s", entityStatus, entityRealURL)
+				}
+			}
+
+			err = p.task.SaveFile(entityRealFileName, string(entityBody))
+			if err != nil {
+				log.Error().Msgf("[%s] save file error: %s", entityRealFileName, err.Error())
+			}
+
+			log.Info().Msgf("[%s] downloaded", entityRealFileName)
 		}
 	}
 	if url.isObject {
 		object, err := p.git.ParseObject(body)
 		if err != nil {
-			log.Error().Msgf("%s parsing error [%s]", url.URL, err.Error())
+			log.Error().Msgf("[%s] parsing error: %s", url.URL, err.Error())
 			p.Wg.Done()
 			return
 		}
 
 		err = p.task.SaveFile(url.fileName, object)
 		if err != nil {
-			log.Error().Msgf("%s save file error [%s]", url.fileName, err.Error())
+			log.Error().Msgf("[%s] save file error: %s", url.fileName, err.Error())
 			p.Wg.Done()
 			return
 		}
-		log.Info().Msgf("%s downloaded", url.fileName)
+		log.Info().Msgf("[%s] downloaded", url.fileName)
 	}
 
 	p.Wg.Done()

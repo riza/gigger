@@ -17,7 +17,23 @@
   
 ## Usage
 
-For now, you can find out which parameter does what by reading the main.go file, I will edit here for usage details soon.
+`
+█▀▀ █ █▀▀ █▀▀ █▀▀ █▀█
+█▄█ █ █▄█ █▄█ ██▄ █▀▄
+
+Usage of gigger:
+  -ssl
+        Disable SSL verification (default true)
+  -t int
+        Concurrent process count (default 30)
+  -timeout duration
+        HTTP request timeout in seconds. (default 10ns)
+  -u string
+        Target URL
+  -v    Verbose output, printing full URL and redirect location (if any) with the results.
+  -x string
+        HTTP Proxy URL
+`
 
 ## p.s.
 
@@ -31,7 +47,7 @@ We also need a new icon, anyone who can make me a pickaxe icon can reach me on [
 - [ ] Codecov with Github Actions
 - [ ] Multi url scan
 - [ ] Index of detection
-- [ ] Download real files (entries, name)
+- [x] Download real files (entries, name)
 
 ## License
 
