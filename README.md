@@ -17,7 +17,7 @@
   
 ## Usage
 
-`
+```
 █▀▀ █ █▀▀ █▀▀ █▀▀ █▀█
 █▄█ █ █▄█ █▄█ ██▄ █▀▄
 
@@ -33,7 +33,7 @@ Usage of gigger:
   -v    Verbose output, printing full URL and redirect location (if any) with the results.
   -x string
         HTTP Proxy URL
-`
+```
 
 ## p.s.
 
