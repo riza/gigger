@@ -31,6 +31,7 @@ We also need a new icon, anyone who can make me a pickaxe icon can reach me on [
 - [ ] Codecov with Github Actions
 - [ ] Multi url scan
 - [ ] Index of detection
+- [ ] Download real files (entries, name)
 
 ## License
 
